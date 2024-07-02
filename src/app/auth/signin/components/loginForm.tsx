@@ -10,9 +10,15 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-    company: z.string().nonempty(),
-    email: z.string().email(),
-    password: z.string().min(6),
+    company: z.string().nonempty({
+        message: "Campo obrigatório"
+    }),
+    email: z.string().email().nonempty({
+        message: "Campo obrigatório"
+    }),
+    password: z.string().min(6, {
+        message: "A senha precisa conter mais de 6 caracteres"
+    }),
 });
 
 const LoginForm = () => {
@@ -32,24 +38,28 @@ const LoginForm = () => {
         })
 
         if (login?.ok) {
-            toast.success("Successfuly login")
+            toast.success("Você entrou com sucesso", {
+                position: "bottom-right",
+            })
             router.push("/dashboard");
         } else if (login?.error) {
-            toast.error(login?.error)
+            toast.error(login?.error, {
+                position: "bottom-right",
+            })
         }
     }
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2">
                 <FormField
                     control={form.control}
                     name="company"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Company:</FormLabel>
+                            <FormLabel>Empresa:</FormLabel>
                             <FormControl>
-                                <Input type="text" placeholder="Company" {...field} />
+                                <Input type="text" placeholder="Empresa" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -73,15 +83,15 @@ const LoginForm = () => {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Password:</FormLabel>
+                            <FormLabel>Senha:</FormLabel>
                             <FormControl>
-                                <Input type="password" placeholder="Password" {...field} />
+                                <Input type="password" placeholder="Senha" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Submit</Button>
+                <Button type="submit">Entrar</Button>
             </form>
         </Form>
     );

@@ -3,16 +3,24 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod"
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-    name: z.string().nonempty(),
-    email: z.string().email(),
-    company: z.string().nonempty(),
-    password: z.string().min(6),
+    name: z.string().nonempty({
+        message: "Campo obrigatório"
+    }),
+    email: z.string().email().nonempty({
+        message: "Campo obrigatório"
+    }),
+    company: z.string().nonempty({
+        message: "Campo obrigatório"
+    }),
+    password: z.string().min(6, {
+        message: "A senha precisa conter mais de 6 caracteres"
+    }),
 });
 
 const RegisterForm = () => {
@@ -21,7 +29,7 @@ const RegisterForm = () => {
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-    })
+    });
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         try {
@@ -38,25 +46,29 @@ const RegisterForm = () => {
                 throw new Error(errorResponse.message);
             }
 
-            toast.success("Successfully regisetred")
+            toast.success("Cadastrado com sucesso!", {
+                position: "bottom-right",
+            });
 
             router.push("/auth/signin");
         } catch (err: any) {
-            toast.error(err.message)
+            toast.error(err.message, {
+                position: "bottom-right",
+            });
         }
-    }
+    };
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2">
                 <FormField
                     control={form.control}
                     name="name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Name:</FormLabel>
+                            <FormLabel>Nome completo:</FormLabel>
                             <FormControl>
-                                <Input type="text" placeholder="Name of responsible" {...field} />
+                                <Input type="text" placeholder="Nome completo" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -80,9 +92,9 @@ const RegisterForm = () => {
                     name="company"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Company:</FormLabel>
+                            <FormLabel>Nome da empresa:</FormLabel>
                             <FormControl>
-                                <Input type="text" placeholder="Company" {...field} />
+                                <Input type="text" placeholder="Nome da empresa" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -93,15 +105,15 @@ const RegisterForm = () => {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Password:</FormLabel>
+                            <FormLabel>Senha:</FormLabel>
                             <FormControl>
-                                <Input type="password" placeholder="Password" {...field} />
+                                <Input type="password" placeholder="Senha" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Create Account</Button>
+                <Button type="submit">Criar conta</Button>
             </form>
         </Form>
     );
