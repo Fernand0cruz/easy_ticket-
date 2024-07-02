@@ -19,9 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ToastProvider/>
+        <ToastProvider />
         <NextAuthSessionProvider>
-          {children}
+          <div className="flex flex-col h-screen">
+              {children}
+          </div>
         </NextAuthSessionProvider>
       </body>
     </html>
