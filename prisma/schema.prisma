@@ -13,10 +13,22 @@ enum Role {
   SUBADMIN
 }
 
+model Company {
+  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
+  name                String    @unique
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  users               User[]
+  departments         Department[]
+}
+
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
   name           String
-  email          String
+  email          String    @unique
+  phone          String?
+  status         String    @default("active")
   hashedPassword String
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -25,14 +37,28 @@ model User {
   company        Company   @relation(fields: [companyId], references: [id])
   companyId      String    @db.ObjectId
 
-  @@index([email])
+  department     Department? @relation(fields: [departmentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  departmentId   String?    @db.ObjectId
+
+  // headOfDepartment Department? @relation("DepartmentHead")
 }
 
-model Company {
+model Department {
   id                  String    @id @default(auto()) @map("_id") @db.ObjectId
   name                String
+  // headId              String?   @db.ObjectId @unique
+  // head                User?     @relation("DepartmentHead", fields: [headId], references: [id])
+  location            String?
+  phone               String
+  email               String
+  status              String    @default("active")
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
+  company             Company   @relation(fields: [companyId], references: [id])
+  companyId           String    @db.ObjectId
+  
   users               User[]
 }
+
+
