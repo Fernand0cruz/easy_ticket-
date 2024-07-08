@@ -13,7 +13,9 @@ const formSchema = z.object({
     company: z.string().nonempty({
         message: "Campo obrigatório"
     }),
-    email: z.string().email().nonempty({
+    email: z.string().email({
+        message: "Email inválido"
+    }).nonempty({
         message: "Campo obrigatório"
     }),
     password: z.string().min(6, {
@@ -57,9 +59,9 @@ const LoginForm = () => {
                     name="company"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Empresa:</FormLabel>
+                            <FormLabel>Empresa:<span className="text-red-600">*</span></FormLabel>
                             <FormControl>
-                                <Input type="text" placeholder="Empresa" {...field} />
+                                <Input type="text" placeholder="Empresa" autoComplete="off" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -70,9 +72,9 @@ const LoginForm = () => {
                     name="email"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Email:</FormLabel>
+                            <FormLabel>Email:<span className="text-red-600">*</span></FormLabel>
                             <FormControl>
-                                <Input type="email" placeholder="Email" {...field} />
+                                <Input type="email" placeholder="Email" autoComplete="off" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -83,7 +85,7 @@ const LoginForm = () => {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Senha:</FormLabel>
+                            <FormLabel>Senha:<span className="text-red-600">*</span></FormLabel>
                             <FormControl>
                                 <Input type="password" placeholder="Senha" {...field} />
                             </FormControl>
